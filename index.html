@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>yoga-bd — Yoga at home, in English and Bangla</title>
+<meta name="description" content="Offline bilingual yoga guide: 24 classic poses, 4 guided routines with a timer, and a practice log. No account, no network.">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div>
+      <p class="wordmark">yoga-bd</p>
+      <p class="tagline" id="tagline">A calm yoga guide for home practice</p>
+    </div>
+    <button id="langToggle" class="btn lang" type="button">বাংলা</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>yoga-bd</h1>
+    <p id="intro" class="lead">24 classic poses with clear steps, 4 guided routines with a timer, and a practice log. Everything works offline, in English or Bangla.</p>
+    <nav class="tabs" aria-label="Sections">
+      <button type="button" data-tab="poses" class="tab active">Poses</button>
+      <button type="button" data-tab="routines" class="tab">Routines</button>
+      <button type="button" data-tab="practice" class="tab">Practice</button>
+      <button type="button" data-tab="data" class="tab">My data</button>
+    </nav>
+  </section>
+
+  <section id="view-poses" aria-label="Poses">
+    <div class="filters">
+      <input id="search" type="search" aria-label="Search poses" placeholder="Search a pose, Sanskrit name, or benefit…">
+      <select id="catFilter" aria-label="Category"></select>
+      <select id="levelFilter" aria-label="Level"></select>
+      <label class="check"><input type="checkbox" id="favOnly"> <span id="favOnlyLabel">Favourites only</span></label>
+    </div>
+    <p id="posesCount" class="count" aria-live="polite"></p>
+    <div id="poseGrid" class="pose-grid"></div>
+    <p id="emptyPoses" class="empty" hidden></p>
+    <article id="poseDetail" class="detail" hidden></article>
+  </section>
+
+  <section id="view-routines" aria-label="Routines" hidden>
+    <h2 id="routinesTitle">Guided routines</h2>
+    <p id="routinesSub" class="muted">Each routine runs pose by pose with a timer and a soft bell.</p>
+
+    <div id="player" class="player" hidden>
+      <p class="player-routine" id="playerRoutineName"></p>
+      <p class="player-step" id="playerStep"></p>
+      <h3 id="playerPose"></h3>
+      <p class="sans" id="playerSans"></p>
+      <p class="timer"><span id="playerTime">30</span></p>
+      <div class="bar" role="progressbar" aria-label="Pose time"><div id="playerBar"></div></div>
+      <ol id="playerSteps" class="player-steps"></ol>
+      <div class="row player-controls">
+        <button type="button" id="prevBtn" class="btn">Back</button>
+        <button type="button" id="pauseBtn" class="btn">Pause</button>
+        <button type="button" id="nextBtn" class="btn primary">Next</button>
+      </div>
+      <div class="row player-controls">
+        <button type="button" id="skipBtn" class="btn ghost">Skip</button>
+        <button type="button" id="soundBtn" class="btn ghost">Bell on</button>
+        <button type="button" id="finishBtn" class="btn ghost">Finish early</button>
+      </div>
+    </div>
+
+    <h3 id="builtInLabel" class="section-label">Ready-made</h3>
+    <div id="routineList" class="routine-list"></div>
+
+    <div id="builderWrap">
+      <button type="button" id="buildCustomBtn" class="btn">Build a custom routine</button>
+      <div id="builder" class="builder" hidden>
+        <label class="field-label" for="customName">Routine name</label>
+        <input id="customName" type="text" maxlength="60" placeholder="Routine name, e.g. My morning flow">
+        <ol id="builderSteps" class="builder-steps"></ol>
+        <div class="row builder-add">
+          <select id="builderPose" aria-label="Choose a pose"></select>
+          <label class="field-label inline" for="builderSecs" id="holdLabel">Hold (seconds)</label>
+          <input id="builderSecs" type="number" min="10" max="300" step="5" value="30">
+          <button type="button" id="addPoseBtn" class="btn">Add pose</button>
+        </div>
+        <div class="row">
+          <button type="button" id="saveRoutineBtn" class="btn primary">Save routine</button>
+          <button type="button" id="clearBuilderBtn" class="btn ghost">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-practice" aria-label="Practice" hidden>
+    <h2 id="practiceTitle">My practice</h2>
+    <div class="stats">
+      <div class="stat"><span class="stat-label">Sessions</span><strong class="stat-value" data-stat="sessions" id="statSessions">0</strong></div>
+      <div class="stat"><span class="stat-label">Minutes</span><strong class="stat-value" data-stat="minutes" id="statMinutes">0</strong></div>
+      <div class="stat"><span class="stat-label">Day streak</span><strong class="stat-value" data-stat="streak" id="statStreak">0</strong></div>
+      <div class="stat"><span class="stat-label">This week</span><strong class="stat-value" data-stat="thisWeek" id="statWeek">0</strong></div>
+    </div>
+    <h3 id="recentLabel" class="section-label">Recent sessions</h3>
+    <ul id="sessionList" class="session-list"></ul>
+    <p id="emptyPractice" class="empty" hidden></p>
+    <button type="button" id="eraseLogBtn" class="btn danger">Erase practice log</button>
+  </section>
+
+  <section id="view-data" aria-label="My data" hidden>
+    <h2 id="dataTitle">My data</h2>
+    <p id="dataSub" class="muted">Your favourites, custom routines and practice log live only in this browser.</p>
+    <div class="row">
+      <button type="button" id="exportBtn" class="btn">Export my data (JSON)</button>
+      <button type="button" id="importBtn" class="btn">Import data (JSON)</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+    <div class="row">
+      <button type="button" id="eraseAllBtn" class="btn danger">Erase everything</button>
+    </div>
+  </section>
+
+  <footer>
+    <p id="safety" class="safety">General guidance, not medical advice. If you are pregnant, injured, or have a health condition, check with a doctor before starting. Stop any pose that hurts.</p>
+    <p id="footerNote" class="foot">yoga-bd · offline · no account · your data stays on your device</p>
+  </footer>
+</main>
+
+<div id="toast" class="toast" role="status" hidden></div>
+<noscript><p class="noscript">yoga-bd needs JavaScript for the pose library, routines and timer.</p></noscript>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
